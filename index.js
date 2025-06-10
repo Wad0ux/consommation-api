@@ -33,6 +33,10 @@ app.post("/add", (req, res) => {
   res.json({ message: "Ajouté avec succès" });
 });
 
+app.get("/", (req, res) => {
+  res.send("Bienvenue sur l'API de consommation !");
+});
+
 app.get("/all", (req, res) => {
   res.json(data);
 });
