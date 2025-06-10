@@ -49,7 +49,7 @@
       margin-top: 20px;
     }
   </style>
-<button onclick="promptAdmin()">🔐 Accès Admin</button>
+<button onclick="admin.html">🔐 Accès Admin</button>
 </head>
 <body>
   <div class="container">
@@ -95,9 +95,9 @@
 
   <script>
 
-const validPassword = "Bravo117";
+//const validPassword = "Bravo117";
 // Vérifie si l'utilisateur est authentifié
-if (!sessionStorage.getItem("isAdmin")) {
+/*if (!sessionStorage.getItem("isAdmin")) {
   const password = prompt("Mot de passe admin :");
  if (password === validPassword) {
     sessionStorage.setItem("isAdmin", "true");
@@ -105,7 +105,7 @@ if (!sessionStorage.getItem("isAdmin")) {
     alert("Accès refusé.");
    window.location.href = "index.html";
   }
-}
+}*/
 
     const apiUrl = "https://consommation-api-1.onrender.com";
     const products = ["Canette", "Nourriture", "Redbull"];
