@@ -44,9 +44,14 @@ function renderTable() {
 
 async function resetData() {
   if (confirm("⚠️ Voulez-vous vraiment tout effacer ?")) {
-    await fetch(`${API_BASE}/reset`, { method: "POST" });
-    await fetchData();
-    renderTable();
+    const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
+    if (res.ok) {
+      await fetchData();
+      renderTable();
+      alert("Données réinitialisées.");
+    } else {
+      alert("Erreur lors de la réinitialisation.");
+    }
   }
 }
 
