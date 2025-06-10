@@ -117,6 +117,14 @@
 
   <script>
 
+function showPopup() {
+  document.getElementById("confirmationPopup").style.display = "flex";
+}
+
+function closePopup() {
+  document.getElementById("confirmationPopup").style.display = "none";
+}
+
 //const validPassword = "Bravo117";
 // Vérifie si l'utilisateur est authentifié
 /*if (!sessionStorage.getItem("isAdmin")) {
@@ -169,7 +177,7 @@
             data = json;
             renderTable();
           });
-        document.getElementById("quantity").value = "";
+       showPopup(); document.getElementById("quantity").value = "";
       });
     }
 
@@ -249,5 +257,31 @@
   }*/
 
   </script>
+<!-- Popup de confirmation -->
+<div id="confirmationPopup" style="
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+">
+  <div style="
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  ">
+    <p>✅ Ajout enregistré avec succès !</p>
+    <button onclick="closePopup()" style="
+      padding: 8px 16px;
+      margin-top: 10px;
+      font-size: 16px;
+    ">OK</button>
+  </div>
+</div>
 </body>
 </html>
