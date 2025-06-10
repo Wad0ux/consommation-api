@@ -79,27 +79,7 @@
     <h1>Popote P2</h1>
 
     <div>
-      <select id="clientSelect">
-        <option value="">-- Sélectionnez un pax --</option>
-        <option value="Hanquet">Ltn Hanquet</option>
-        <option value="Betin">Adj Bétin</option>
-        <option value="Sais">Gnd Sais</option>
-      <option value="Walaine">Gnd Walaine</option>
-        <option value="Boulogne">Gnd Boulogne</option>
-        <option value="Feret">Gnd Féret</option>
-          <option value="Boulogne">Gnd Boulogne</option>
-          <option value="Taifoury">Gnd Taifoury</option>
-        <option value="Perin">Gnd Périn</option>
-        <option value="Chaussinand">Gnd Chaussinand</option>
-        <option value="Vasseur">Gnd Vasseur</option>
-        <option value="Befolo">Gnd Befolo</option>
-        <option value="Nageur">Gnd Nageur</option>
-        <option value="Gutirez">Gnd Gutirez</option>
-        <option value="Hariti">EG Hariti</option>
-        <option value="Aujames">EG Aujames</option>
-        <option value="Staub">EG Staub</option>
-        <option value="Wadoux">EG Wadoux</option>
-        </select>
+      
 
   <label for="productSelect">Produit :</label>
   <select id="productSelect">
@@ -344,14 +324,28 @@ showPopup();
   </a>
 </div>
 
-  <label>Client :
-    <input list="clients" id="clientSelect" />
-    <datalist id="clients">
-      <option value="Hanquet">
-      <option value="Betin">
-      <option value="Guti">
-    </datalist>
-  </label>
+
+<select id="clientSelect">
+        <option value="">-- Sélectionnez un pax --</option>
+        <option value="Hanquet">Ltn Hanquet</option>
+        <option value="Betin">Adj Bétin</option>
+        <option value="Sais">Gnd Sais</option>
+      <option value="Walaine">Gnd Walaine</option>
+        <option value="Boulogne">Gnd Boulogne</option>
+        <option value="Feret">Gnd Féret</option>
+          <option value="Boulogne">Gnd Boulogne</option>
+          <option value="Taifoury">Gnd Taifoury</option>
+        <option value="Perin">Gnd Périn</option>
+        <option value="Chaussinand">Gnd Chaussinand</option>
+        <option value="Vasseur">Gnd Vasseur</option>
+        <option value="Befolo">Gnd Befolo</option>
+        <option value="Nageur">Gnd Nageur</option>
+        <option value="Gutirez">Gnd Gutirez</option>
+        <option value="Hariti">EG Hariti</option>
+        <option value="Aujames">EG Aujames</option>
+        <option value="Staub">EG Staub</option>
+        <option value="Wadoux">EG Wadoux</option>
+        </select>
 
   <label>Produit :
     <select id="productSelect">
@@ -366,8 +360,6 @@ showPopup();
   </label>
 
   <button onclick="addConsumption()">Ajouter</button>
-
-  <button id="toggleBtn" onclick="toggleTable()">Afficher les données</button>
 
   <div id="popup">
     Ajout enregistré !
