@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+/*<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -18,5 +18,157 @@
   <table id="consumptionTable"></table>
 
   <script src="admin.js"></script>
+</body>
+</html>*/
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Consommation</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    #login, #adminPanel {
+      max-width: 800px;
+      margin: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 8px;
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="login">
+    <h2>Connexion Admin</h2>
+    <label>Mot de passe :
+      <input type="password" id="password">
+    </label>
+    <button onclick="login()">Connexion</button>
+    <p id="loginError" style="color:red;"></p>
+  </div>
+
+  <div id="adminPanel" class="hidden">
+    <h1>Administration</h1>
+    <button onclick="exportCSV()">📤 Exporter CSV</button>
+    <button onclick="resetData()">🗑️ Réinitialiser</button>
+    <table id="adminTable"></table>
+  </div>
+
+  <script>
+    const API_BASE = "https://consommation-api-1.onrender.com";
+    const PASSWORD = "gendarme"; // 🔒 change ce mot de passe ici
+    const products = ["Canette", "Nourriture", "Redbull"];
+    const productPrices = {
+      "Canette": 1,
+      "Nourriture": 0.6,
+      "Redbull": 1.5
+    };
+
+    let data = [];
+
+    function login() {
+      const input = document.getElementById("password").value;
+      if (input === PASSWORD) {
+        document.getElementById("login").classList.add("hidden");
+        document.getElementById("adminPanel").classList.remove("hidden");
+        loadData();
+      } else {
+        document.getElementById("loginError").textContent = "Mot de passe incorrect.";
+      }
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(`${API_BASE}/all`);
+        data = await res.json();
+        renderTable();
+      } catch {
+        alert("Erreur lors du chargement.");
+      }
+    }
+
+    function renderTable() {
+      const table = document.getElementById("adminTable");
+      const clients = [...new Set(data.map(e => e.client))].sort();
+
+      let html = "<thead><tr><th>Client</th>";
+      products.forEach(p => html += `<th>${p}</th>`);
+      html += "<th>Prix total (€)</th></tr></thead><tbody>";
+
+      clients.forEach(client => {
+        html += `<tr><td>${client}</td>`;
+        let totalPrice = 0;
+        products.forEach(product => {
+          const entry = data.find(e => e.client === client && e.product === product);
+          const qty = entry ? entry.quantity : 0;
+          html += `<td>${qty}</td>`;
+          totalPrice += qty * (productPrices[product] || 0);
+        });
+        html += `<td>${totalPrice.toFixed(2)}</td></tr>`;
+      });
+
+      html += "</tbody>";
+      table.innerHTML = html;
+    }
+
+    async function resetData() {
+      if (!confirm("Confirmer la réinitialisation ?")) return;
+      try {
+        await fetch(`${API_BASE}/reset`, { method: "POST" });
+        loadData();
+      } catch {
+        alert("Échec de réinitialisation.");
+      }
+    }
+
+    function exportCSV() {
+      if (data.length === 0) {
+        alert("Aucune donnée à exporter.");
+        return;
+      }
+
+      const clients = [...new Set(data.map(e => e.client))].sort();
+      let csv = "Client," + products.join(",") + ",Prix total (€)\n";
+
+      clients.forEach(client => {
+        const row = [client];
+        let total = 0;
+        products.forEach(product => {
+          const entry = data.find(e => e.client === client && e.product === product);
+          const qty = entry ? entry.quantity : 0;
+          row.push(qty);
+          total += qty * (productPrices[product] || 0);
+        });
+        row.push(total.toFixed(2));
+        csv += row.join(",") + "\n";
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "consommation_clients.csv";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
 </body>
 </html>
