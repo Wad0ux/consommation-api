@@ -48,10 +48,32 @@
       display: none;
       margin-top: 20px;
     }
-  </style>
-<button onclick="/admin.html">🔐 Accès Admin</button>
-</head>
+  
+    .admin-button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .admin-button:hover {
+      background-color: #45a049;
+    }
+</style>
 <body>
+
+  <button class="admin-button" onclick="goToAdmin()">Accéder à la page Admin</button>
+
+  <script>
+    function goToAdmin() {
+      window.location.href = "/admin";
+    }
+  </script>
+
   <div class="container">
 
     <h1>Popote P2</h1>
