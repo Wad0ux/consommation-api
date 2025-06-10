@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+/*<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -285,5 +285,190 @@ showPopup();
     ">OK</button>
   </div>
 </div>
+</body>
+</html>*/
+
+
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Suivi de Consommation</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: white;
+      padding: 20px;
+    }
+    #popup {
+      display: none;
+      position: fixed;
+      top: 30%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #cfe8ff;
+      border: 2px solid #0077cc;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestion de la Consommation</h1>
+<!-- Bouton vers la page admin -->
+<div style="margin-top: 20px; text-align: center;">
+  <a href="admin.html">
+    <button style="
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    ">
+      Accès Admin
+    </button>
+  </a>
+</div>
+
+  <label>Client :
+    <input list="clients" id="clientSelect" />
+    <datalist id="clients">
+      <option value="Hanquet">
+      <option value="Betin">
+      <option value="Guti">
+    </datalist>
+  </label>
+
+  <label>Produit :
+    <select id="productSelect">
+      <option value="Canette">Canette</option>
+      <option value="Nourriture">Nourriture</option>
+      <option value="Redbull">Redbull</option>
+    </select>
+  </label>
+
+  <label>Quantité :
+    <input type="number" id="quantity" value="1" min="1">
+  </label>
+
+  <button onclick="addConsumption()">Ajouter</button>
+
+  <button id="toggleBtn" onclick="toggleTable()">Afficher les données</button>
+
+  <div id="popup">
+    Ajout enregistré !
+    <br><br>
+    <button onclick="closePopup()">OK</button>
+  </div>
+
+  <table id="consumptionTable" style="display: none;"></table>
+
+  <script>
+    const API_BASE = "https://consommation-api-1.onrender.com";
+    const products = ["Canette", "Nourriture", "Redbull"];
+    const productPrices = {
+      "Canette": 1,
+      "Nourriture": 0.6,
+      "Redbull": 1.5
+    };
+
+    let data = [];
+
+    window.onload = () => {
+      loadData();
+    };
+
+    async function loadData() {
+      try {
+        const res = await fetch(`${API_BASE}/all`);
+        data = await res.json();
+        renderTable();
+      } catch (err) {
+        alert("Erreur de chargement des données.");
+      }
+    }
+
+    async function saveToBackend(client, product, quantity) {
+      try {
+        await fetch(`${API_BASE}/add`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ client, product, quantity })
+        });
+        showPopup();
+        loadData();
+      } catch {
+        alert("Erreur lors de l'ajout.");
+      }
+    }
+
+    function addConsumption() {
+      const client = document.getElementById("clientSelect").value;
+      const product = document.getElementById("productSelect").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!client || !product || isNaN(quantity) || quantity <= 0) {
+        alert("Sélection non valide camarade !");
+        return;
+      }
+
+      saveToBackend(client, product, quantity);
+      document.getElementById("quantity").value = "";
+    }
+
+    function renderTable() {
+      const table = document.getElementById("consumptionTable");
+      const clients = [...new Set(data.map(e => e.client))].sort();
+
+      let html = "<thead><tr><th>Client</th>";
+      products.forEach(p => html += `<th>${p}</th>`);
+      html += "<th>Prix total (€)</th></tr></thead><tbody>";
+
+      clients.forEach(client => {
+        html += `<tr><td>${client}</td>`;
+        let totalPrice = 0;
+        products.forEach(product => {
+          const entry = data.find(e => e.client === client && e.product === product);
+          const qty = entry ? entry.quantity : 0;
+          html += `<td>${qty}</td>`;
+          totalPrice += qty * (productPrices[product] || 0);
+        });
+        html += `<td>${totalPrice.toFixed(2)}</td></tr>`;
+      });
+
+      html += "</tbody>";
+      table.innerHTML = html;
+    }
+
+    function toggleTable() {
+      const table = document.getElementById("consumptionTable");
+      const btn = document.getElementById("toggleBtn");
+      const visible = table.style.display === "table";
+      table.style.display = visible ? "none" : "table";
+      btn.textContent = visible ? "Afficher les données" : "Masquer les données";
+    }
+
+    function showPopup() {
+      document.getElementById("popup").style.display = "block";
+    }
+
+    function closePopup() {
+      document.getElementById("popup").style.display = "none";
+    }
+  </script>
 </body>
 </html>
