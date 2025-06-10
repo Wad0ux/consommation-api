@@ -2,104 +2,51 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Popote P2</title>
+  <title>Consommation Clients</title>
   <style>
     body {
+      background: white;
       font-family: Arial, sans-serif;
-      margin: 30px;
-      background-color: white;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
       padding: 20px;
-      background: royalblue;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    img {
-      display: block;
-      margin: 0 auto 20px;
-      width: 150px;
-    }
-    select, input, button {
-      padding: 8px;
-      margin: 5px;
-      font-size: 1rem;
     }
     table {
-      width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      width: 100%;
+      display: none;
     }
     th, td {
       border: 1px solid #ccc;
       padding: 8px;
       text-align: center;
     }
-    .actions button {
-      margin-right: 10px;
-      padding: 10px 15px;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    #consumptionTable {
-      display: none;
-      margin-top: 20px;
+    th {
+      background-color: #f0f0f0;
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <h1>Enregistrement de consommation</h1>
+  <label for="clientSelect">Client :</label>
+  <input id="clientSelect" placeholder="Nom du client" />
 
-    <h1>Popote P2</h1>
+  <label for="productSelect">Produit :</label>
+  <select id="productSelect">
+    <option value="Canette">Canette</option>
+    <option value="Nourriture">Nourriture</option>
+    <option value="Redbull">Redbull</option>
+  </select>
 
-    <div>
-      <select id="clientSelect">
-        <option value="">-- Sélectionnez un pax --</option>
-        <option value="Hanquet">Ltn Hanquet</option>
-        <option value="Betin">Adj Bétin</option>
-        <option value="Sais">Gnd Sais</option>
-      <option value="Walaine">Gnd Walaine</option>
-        <option value="Boulogne">Gnd Boulogne</option>
-        <option value="Feret">Gnd Féret</option>
-        <option value="Taifoury">Gnd Taifoury</option>
-        <option value="Perin">Gnd Périn</option>
-        <option value="Chaussinand">Gnd Chaussinand</option>
-        <option value="Vasseur">Gnd Vasseur</option>
-        <option value="Befolo">Gnd Befolo</option>
-        <option value="Nageur">Gnd Nageur</option>
-        <option value="Gutirez">Gnd Gutirez</option>
-        <option value="Hariti">EG Hariti</option>
-        <option value="Aujames">EG Aujames</option>
-        <option value="Staub">EG Staub</option>
-        <option value="Wadoux">EG Wadoux</option>
-        </select>
+  <label for="quantity">Quantité :</label>
+  <input type="number" id="quantity" min="1" value="1" />
 
-      <select id="productSelect">
-        <option value="">-- Sélectionnez un produit --</option>
-        <option value="Canette">Canette</option>
-        <option value="Nourriture">Nourriture</option>
-        <option value="Redbull">Redbull</option>
-      </select>
+  <button onclick="addConsumption()">Ajouter</button>
+  <button id="toggleBtn" onclick="toggleTable()">Afficher les données</button>
+  <button onclick="exportCSV()">Exporter CSV</button>
 
-      <input type="number" id="quantity" placeholder="Quantité" min="1" />
-
-      <button onclick="addConsumption()">Ajouter</button>
-    </div>
-
-    <div class="actions">
-      <button onclick="resetData()" style="background-color: #e74c3c; color: white;">Réinitialiser</button>
-      <button onclick="exportCSV()" style="background-color: #27ae60; color: white;">Exporter</button>
-      <button onclick="toggleTable()" id="toggleBtn">Afficher les données</button>
-    </div>
-
-    <table id="consumptionTable"></table>
-  </div>
+  <table id="consumptionTable"></table>
 
   <script>
-    const apiUrl = "https://consommation-api-1.onrender.com"; // mets ici ton vrai lien
+    const apiUrl = "https://consommation-api-1.onrender.com";
     const products = ["Canette", "Nourriture", "Redbull"];
     const productPrices = {
       "Canette": 1,
@@ -109,13 +56,13 @@
 
     let data = [];
 
-    // Charger données stockées au chargement
     window.onload = () => {
-      const saved = localStorage.getItem("consumptionData");
-      if (saved) {
-        data = JSON.parse(saved);
-        renderTable();
-      }
+      fetch(apiUrl + "/all")
+        .then(res => res.json())
+        .then(json => {
+          data = json;
+          renderTable();
+        });
     };
 
     function addConsumption() {
@@ -128,16 +75,19 @@
         return;
       }
 
-      const existing = data.find(entry => entry.client === client && entry.product === product);
-      if (existing) {
-        existing.quantity += quantity;
-      } else {
-        data.push({ client, product, quantity });
-      }
-
-      saveData();
-      renderTable();
-      document.getElementById("quantity").value = "";
+      fetch(apiUrl + "/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ client, product, quantity })
+      }).then(() => {
+        fetch(apiUrl + "/all")
+          .then(res => res.json())
+          .then(json => {
+            data = json;
+            renderTable();
+          });
+        document.getElementById("quantity").value = "";
+      });
     }
 
     function renderTable() {
@@ -162,18 +112,6 @@
 
       html += "</tbody>";
       table.innerHTML = html;
-    }
-
-    function saveData() {
-      localStorage.setItem("consumptionData", JSON.stringify(data));
-    }
-
-    function resetData() {
-      if (confirm("Voulez-vous vraiment réinitialiser toutes les données ?")) {
-        data = [];
-        localStorage.removeItem("consumptionData");
-        renderTable();
-      }
     }
 
     function exportCSV() {
