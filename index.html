@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Popote P2</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: white;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      background: royalblue;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    img {
+      display: block;
+      margin: 0 auto 20px;
+      width: 150px;
+    }
+    select, input, button {
+      padding: 8px;
+      margin: 5px;
+      font-size: 1rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    .actions button {
+      margin-right: 10px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    #consumptionTable {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <h1>Popote P2</h1>
+
+    <div>
+      <select id="clientSelect">
+        <option value="">-- Sélectionnez un pax --</option>
+        <option value="Hanquet">Ltn Hanquet</option>
+        <option value="Betin">Adj Bétin</option>
+        <option value="Sais">Gnd Sais</option>
+      <option value="Walaine">Gnd Walaine</option>
+        <option value="Boulogne">Gnd Boulogne</option>
+        <option value="Feret">Gnd Féret</option>
+        <option value="Taifoury">Gnd Taifoury</option>
+        <option value="Perin">Gnd Périn</option>
+        <option value="Chaussinand">Gnd Chaussinand</option>
+        <option value="Vasseur">Gnd Vasseur</option>
+        <option value="Befolo">Gnd Befolo</option>
+        <option value="Nageur">Gnd Nageur</option>
+        <option value="Gutirez">Gnd Gutirez</option>
+        <option value="Hariti">EG Hariti</option>
+        <option value="Aujames">EG Aujames</option>
+        <option value="Staub">EG Staub</option>
+        <option value="Wadoux">EG Wadoux</option>
+        </select>
+
+      <select id="productSelect">
+        <option value="">-- Sélectionnez un produit --</option>
+        <option value="Canette">Canette</option>
+        <option value="Nourriture">Nourriture</option>
+        <option value="Redbull">Redbull</option>
+      </select>
+
+      <input type="number" id="quantity" placeholder="Quantité" min="1" />
+
+      <button onclick="addConsumption()">Ajouter</button>
+    </div>
+
+    <div class="actions">
+      <button onclick="resetData()" style="background-color: #e74c3c; color: white;">Réinitialiser</button>
+      <button onclick="exportCSV()" style="background-color: #27ae60; color: white;">Exporter</button>
+      <button onclick="toggleTable()" id="toggleBtn">Afficher les données</button>
+    </div>
+
+    <table id="consumptionTable"></table>
+  </div>
+
+  <script>
+    const apiUrl = "https://consommation-api-1.onrender.com"; // mets ici ton vrai lien
+    const products = ["Canette", "Nourriture", "Redbull"];
+    const productPrices = {
+      "Canette": 1,
+      "Nourriture": 0.6,
+      "Redbull": 1.5
+    };
+
+    let data = [];
+
+    // Charger données stockées au chargement
+    window.onload = () => {
+      const saved = localStorage.getItem("consumptionData");
+      if (saved) {
+        data = JSON.parse(saved);
+        renderTable();
+      }
+    };
+
+    function addConsumption() {
+      const client = document.getElementById("clientSelect").value;
+      const product = document.getElementById("productSelect").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      if (!client || !product || isNaN(quantity) || quantity <= 0) {
+        alert("Sélection non valide camarade !");
+        return;
+      }
+
+      const existing = data.find(entry => entry.client === client && entry.product === product);
+      if (existing) {
+        existing.quantity += quantity;
+      } else {
+        data.push({ client, product, quantity });
+      }
+
+      saveData();
+      renderTable();
+      document.getElementById("quantity").value = "";
+    }
+
+    function renderTable() {
+      const table = document.getElementById("consumptionTable");
+      const clients = [...new Set(data.map(e => e.client))].sort();
+
+      let html = "<thead><tr><th>Client</th>";
+      products.forEach(p => html += `<th>${p}</th>`);
+      html += "<th>Prix total (€)</th></tr></thead><tbody>";
+
+      clients.forEach(client => {
+        html += `<tr><td>${client}</td>`;
+        let totalPrice = 0;
+        products.forEach(product => {
+          const entry = data.find(e => e.client === client && e.product === product);
+          const qty = entry ? entry.quantity : 0;
+          html += `<td>${qty}</td>`;
+          totalPrice += qty * (productPrices[product] || 0);
+        });
+        html += `<td>${totalPrice.toFixed(2)}</td></tr>`;
+      });
+
+      html += "</tbody>";
+      table.innerHTML = html;
+    }
+
+    function saveData() {
+      localStorage.setItem("consumptionData", JSON.stringify(data));
+    }
+
+    function resetData() {
+      if (confirm("Voulez-vous vraiment réinitialiser toutes les données ?")) {
+        data = [];
+        localStorage.removeItem("consumptionData");
+        renderTable();
+      }
+    }
+
+    function exportCSV() {
+      if (data.length === 0) {
+        alert("Aucune donnée à exporter.");
+        return;
+      }
+      const clients = [...new Set(data.map(e => e.client))].sort();
+      let csv = "Pax," + products.join(",") + ",Prix total (€)\n";
+
+      clients.forEach(client => {
+        const row = [client];
+        let totalPrice = 0;
+        products.forEach(product => {
+          const entry = data.find(e => e.client === client && e.product === product);
+          const qty = entry ? entry.quantity : 0;
+          row.push(qty);
+          totalPrice += qty * (productPrices[product] || 0);
+        });
+        row.push(totalPrice.toFixed(2));
+        csv += row.join(",") + "\n";
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", "consommation_clients.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function toggleTable() {
+      const table = document.getElementById("consumptionTable");
+      const btn = document.getElementById("toggleBtn");
+      const visible = table.style.display === "table";
+
+      table.style.display = visible ? "none" : "table";
+      btn.textContent = visible ? "Afficher les données" : "Masquer les données";
+    }
+  </script>
+</body>
+</html>
