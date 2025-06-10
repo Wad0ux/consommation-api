@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Connexion Admin</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    form { display: inline-block; text-align: left; }
+    input { display: block; margin-bottom: 10px; padding: 5px; width: 200px; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h2>Connexion à la page Admin</h2>
+  <form method="POST" action="/login">
+    <label>Nom d'utilisateur :
+      <input type="text" name="username" required>
+    </label>
+    <label>Mot de passe :
+      <input type="password" name="password" required>
+    </label>
+    <button type="submit">Se connecter</button>
+  </form>
+  <div class="error">
+    <script>
+      if (window.location.search.includes("error=1")) {
+        document.write("Identifiants incorrects.");
+      }
+    </script>
+  </div>
+</body>
+</html>
