@@ -60,40 +60,10 @@
       transition: background-color 0.3s ease;
     }
 
-    .admin-button:hover {
-      background-color: #45a049;
-    }
 </style>
 <body>
 
-  <button class="admin-button" onclick="goToAdmin()">Accéder à la page Admin</button>
 
-  <script>
-    function goToAdmin() {
-      window.location.href = "admin.html";
-    }
-  </script>
-
-  <div class="container">
-
-    <h1>Popote P2</h1>
-
-    <div>
-      
-
-  <label for="productSelect">Produit :</label>
-  <select id="productSelect">
-    <option value="Canette">Canette</option>
-    <option value="Nourriture">Nourriture</option>
-    <option value="Redbull">Redbull</option>
-  </select>
-
-  <label for="quantity">Quantité :</label>
-  <input type="number" id="quantity" min="1" value="1" />
-
-  <button onclick="addConsumption()">Ajouter</button>
-
-  <table id="consumptionTable"></table>
 
   <script>
 
