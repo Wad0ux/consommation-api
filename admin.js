@@ -42,7 +42,7 @@ function renderTable() {
   table.innerHTML = html;
 }
 
-async function resetData() {
+/*async function resetData() {
   if (confirm("⚠️ Voulez-vous vraiment tout effacer ?")) {
     const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
     if (res.ok) {
@@ -53,7 +53,20 @@ async function resetData() {
       alert("Erreur lors de la réinitialisation.");
     }
   }
+}*/
+
+
+
+async function resetData() {
+  if (confirm("Voulez-vous vraiment tout réinitialiser ?")) {
+    await fetch("/reset", { method: "POST" });
+    location.reload(); // recharge les données
+  }
 }
+
+
+
+
 
 function exportCSV() {
   if (data.length === 0) return alert("Aucune donnée à exporter.");
