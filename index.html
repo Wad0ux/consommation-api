@@ -201,6 +201,18 @@
       table.style.display = visible ? "none" : "table";
       btn.textContent = visible ? "Afficher les données" : "Masquer les données";
     }
+
+  function promptAdmin() {
+    const password = prompt("Mot de passe requis pour accéder à la page admin :");
+    const adminPassword = "Bravo117";
+
+    if (password === adminPassword) {
+      window.location.href = "admin.html";
+    } else {
+      alert("⛔ Mot de passe incorrect.");
+    }
+  }
+
   </script>
 </body>
 </html>
