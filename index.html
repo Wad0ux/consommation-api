@@ -94,6 +94,20 @@
   <table id="consumptionTable"></table>
 
   <script>
+
+const validPassword = "gendarme42";
+
+// Vérifie si l'utilisateur est authentifié
+if (!sessionStorage.getItem("isAdmin")) {
+  const password = prompt("Mot de passe admin :");
+  if (password === validPassword) {
+    sessionStorage.setItem("isAdmin", "true");
+  } else {
+    alert("Accès refusé.");
+    window.location.href = "index.html";
+  }
+}
+
     const apiUrl = "https://consommation-api-1.onrender.com";
     const products = ["Canette", "Nourriture", "Redbull"];
     const productPrices = {
