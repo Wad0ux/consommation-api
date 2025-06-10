@@ -41,6 +41,11 @@ app.get("/all", (req, res) => {
   res.json(data);
 });
 
+app.post("/reset", (req, res) => {
+  fs.writeFileSync(DATA_FILE, "[]");
+  res.json({ message: "Données réinitialisées." });
+});
+
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
 });
