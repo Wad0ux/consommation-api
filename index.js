@@ -78,7 +78,7 @@ function readData() {
 }
 
 function writeData(data) {
-  fs.writeFileSync(data.json, JSON.stringify(data, null, 2));
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
 // Auth middleware
