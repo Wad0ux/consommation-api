@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Réinitialisation</title>
+</head>
+<body>
+  <h1>Test de l'API /reset</h1>
+  <button onclick="testReset()">Tester la réinitialisation</button>
+  <p id="result"></p>
+
+  <script>
+    const API_BASE = "https://consommation-api-1.onrender.com"; // Change si besoin
+
+    async function testReset() {
+      document.getElementById("result").textContent = "Test en cours...";
+      try {
+        const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById("result").textContent = "✅ Succès : " + data.message;
+        } else {
+          document.getElementById("result").textContent = "❌ Erreur : " + (data.error || "réponse non attendue");
+        }
+      } catch (err) {
+        document.getElementById("result").textContent = "❌ Échec de la requête : " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
