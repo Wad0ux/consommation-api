@@ -113,7 +113,7 @@ app.get("/all", (req, res) => {
   res.json(readData());
 });
 
-app.post("/add", (req, res) => {
+/*app.post("/add", (req, res) => {
   const { client, product, quantity } = req.body;
   const data = readData();
   const existing = data.find(e => e.client === client && e.product === product);
@@ -124,7 +124,16 @@ app.post("/add", (req, res) => {
   }
   writeData(data);
   res.sendStatus(200);
+});*/
+
+
+await fetch(`${API_BASE}/add`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ client, product, quantity }),
 });
+
+
 
 app.post("/reset", (req, res) => {
   writeData([]);
