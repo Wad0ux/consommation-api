@@ -58,7 +58,7 @@ function renderTable() {
       alert("❌ Erreur lors de la réinitialisation.");
     });
   }
-}*/
+}
 
 
 async function resetData() {
@@ -74,7 +74,7 @@ async function resetData() {
   }
 }
 
-/*
+
 app.post("/reset", (req, res) => {
   try {
     writeData([]); // Vide le fichier JSON
@@ -84,7 +84,7 @@ app.post("/reset", (req, res) => {
     res.status(500).json({ error: "Erreur serveur lors de la réinitialisation" });
   }
 });
-
+*/
 
 async function resetData() {
   if (confirm("Voulez-vous vraiment tout réinitialiser ?")) {
@@ -92,7 +92,7 @@ async function resetData() {
     location.reload(); // recharge les données
   }
 }
-*/
+
 
 
 
