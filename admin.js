@@ -42,7 +42,7 @@ function renderTable() {
   table.innerHTML = html;
 }
 
-/*async function resetData() {
+async function resetData() {
   if (confirm("⚠️ Voulez-vous vraiment tout effacer ?")) {
     const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
     if (res.ok) {
@@ -53,10 +53,10 @@ function renderTable() {
       alert("Erreur lors de la réinitialisation.");
     }
   }
-}*/
+}
 
 
-app.post("/reset", (req, res) => {
+/*app.post("/reset", (req, res) => {
   try {
     writeData([]); // Vide le fichier JSON
     res.json({ message: "Données réinitialisées" });
@@ -67,13 +67,13 @@ app.post("/reset", (req, res) => {
 });
 
 
-/*async function resetData() {
+async function resetData() {
   if (confirm("Voulez-vous vraiment tout réinitialiser ?")) {
     await fetch("/reset", { method: "POST" });
     location.reload(); // recharge les données
   }
-}*/
-
+}
+*/
 
 
 
