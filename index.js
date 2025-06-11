@@ -148,3 +148,15 @@ app.get("/admin.html", requireAuth, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
 });
+
+app.post("/reset", (req, res) => {
+  console.log("Requête de réinitialisation reçue");
+  try {
+    writeData([]);
+    console.log("Fichier vidé avec succès");
+    res.json({ message: "Données réinitialisées" });
+  } catch (err) {
+    console.error("Erreur:", err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
