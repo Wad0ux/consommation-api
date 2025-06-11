@@ -42,7 +42,26 @@ function renderTable() {
   table.innerHTML = html;
 }
 
-async function resetData() {
+function resetData() {
+  if (confirm("Voulez-vous vraiment réinitialiser toutes les données ?")) {
+    fetch("https://consommation-api-1.onrender.com/reset", {
+      method: "POST"
+    })
+    .then(res => res.json())
+    .then(() => {
+      data = [];
+      renderTable();
+      alert("✅ Données réinitialisées !");
+    })
+    .catch(err => {
+      console.error("Erreur reset :", err);
+      alert("❌ Erreur lors de la réinitialisation.");
+    });
+  }
+}
+
+
+/*async function resetData() {
   if (confirm("⚠️ Voulez-vous vraiment tout effacer ?")) {
     const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
     if (res.ok) {
@@ -56,7 +75,7 @@ async function resetData() {
 }
 
 
-/*app.post("/reset", (req, res) => {
+app.post("/reset", (req, res) => {
   try {
     writeData([]); // Vide le fichier JSON
     res.json({ message: "Données réinitialisées" });
