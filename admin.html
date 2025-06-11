@@ -103,15 +103,24 @@
       table.innerHTML = html;
     }
 
-    async function resetData() {
-      if (!confirm("Confirmer la réinitialisation ?")) return;
-      try {
-        await fetch(`${API_BASE}/reset`, { method: "POST" });
-        loadData();
-      } catch {
-        alert("Échec de réinitialisation.");
-      }
-    }
+    function resetData() {
+  if (confirm("Voulez-vous vraiment réinitialiser toutes les données ?")) {
+    fetch("https://consommation-api-1.onrender.com/reset", {
+      method: "POST"
+    })
+      .then(res => res.json())
+      .then(() => {
+        data = [];
+        localStorage.removeItem("consumptionData"); // On vide aussi le cache local
+        renderTable();
+        alert("✅ Données réinitialisées !");
+      })
+      .catch(err => {
+        console.error("Erreur reset :", err);
+        alert("❌ Erreur lors de la réinitialisation.");
+      });
+  }
+}
 
     function exportCSV() {
       if (data.length === 0) {
