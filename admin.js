@@ -42,7 +42,7 @@ function renderTable() {
   table.innerHTML = html;
 }
 
-function resetData() {
+/*function resetData() {
   if (confirm("Voulez-vous vraiment réinitialiser toutes les données ?")) {
     fetch("https://consommation-api-1.onrender.com/reset", {
       method: "POST"
@@ -58,10 +58,10 @@ function resetData() {
       alert("❌ Erreur lors de la réinitialisation.");
     });
   }
-}
+}*/
 
 
-/*async function resetData() {
+async function resetData() {
   if (confirm("⚠️ Voulez-vous vraiment tout effacer ?")) {
     const res = await fetch(`${API_BASE}/reset`, { method: "POST" });
     if (res.ok) {
@@ -74,7 +74,7 @@ function resetData() {
   }
 }
 
-
+/*
 app.post("/reset", (req, res) => {
   try {
     writeData([]); // Vide le fichier JSON
