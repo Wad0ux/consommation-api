@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Ajout Consommation</title>
+</head>
+<body style="font-family: sans-serif; padding: 2rem;">
+  <h1>Test de l'API /add</h1>
+
+  <label>Client : <input id="client" value="Jean" /></label><br><br>
+  <label>Produit :
+    <select id="product">
+      <option value="Canette">Canette</option>
+      <option value="Nourriture">Nourriture</option>
+      <option value="Redbull">Redbull</option>
+    </select>
+  </label><br><br>
+  <label>Quantité : <input id="quantity" type="number" value="1" /></label><br><br>
+
+  <button onclick="testAdd()" style="padding: 0.5rem 1rem;">Ajouter</button>
+  <p id="result" style="margin-top: 1rem; font-weight: bold;"></p>
+
+  <script>
+    const API_BASE = "https://consommation-api-1.onrender.com"; // à adapter si changé
+
+    async function testAdd() {
+      const client = document.getElementById("client").value;
+      const product = document.getElementById("product").value;
+      const quantity = parseInt(document.getElementById("quantity").value);
+
+      const payload = { client, product, quantity };
+      document.getElementById("result").textContent = "Test en cours...";
+
+      try {
+        const res = await fetch(`${API_BASE}/add`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          document.getElementById("result").textContent = "✅ Succès : " + data.message;
+        } else {
+          document.getElementById("result").textContent = "❌ Erreur : " + (data.error || "Réponse non attendue");
+        }
+      } catch (err) {
+        document.getElementById("result").textContent = "❌ Échec de la requête : " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
